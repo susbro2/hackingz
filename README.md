@@ -1,45 +1,46 @@
-# Terminal Adventure Game
+# TBomb Terminal PWA
 
-A cross-platform terminal-style adventure game built with Flutter and Dart.
+A Progressive Web App (PWA) simulation of the TBomb hacking toolkit for educational purposes.
 
 ## Features
 
-- Terminal-style interface with green text on black background
-- Command-based gameplay (help, look, move, take items)
-- Cross-platform support (Android, Windows, Linux, macOS)
-- Command history with arrow key navigation
-- Simple adventure game mechanics
+- 📱 SMS bombing simulation
+- 📞 Call bombing simulation  
+- 📧 Email bombing simulation
+- 🔍 Network scanner (NMAP)
+- 🌐 Domain lookup (WHOIS)
+- Touch-friendly mobile interface
+- Works offline after installation
+- Full-screen app experience
 
-## Available Commands
+## Installation
 
-- `help` - Show available commands
-- `look` - Examine current location
-- `inventory` or `inv` - Show inventory
-- `status` - Show player status
-- `north/south/east/west` - Move in directions
-- `take <item>` - Pick up items
-- `clear` - Clear terminal screen
+### Method 1: Web Hosting
+1. Upload all files to web hosting (GitHub Pages, Netlify, etc.)
+2. Open URL in Chrome on Android
+3. Tap menu (⋮) → "Add to Home screen"
+4. App installs like native Android app
 
-## Running the Game
+### Method 2: Local File
+1. Copy `terminal.html` to phone
+2. Open with Chrome browser
+3. Bookmark for easy access
 
-### Android
-```bash
-flutter run -d android
-```
+## Files
 
-### Desktop (Windows/Linux/macOS)
-```bash
-flutter run -d windows
-flutter run -d linux
-flutter run -d macos
-```
+- `terminal.html` - Main application
+- `manifest.json` - PWA configuration
+- `sw.js` - Service worker for offline use
+- `icon-192.png` - App icon
+- `PWA_INSTALL.md` - Detailed installation guide
 
-## Game Locations
+## Usage
 
-- **Home**: Starting room with a key on the desk
-- **Hallway**: Connects home to garden
-- **Garden**: Contains a coin to collect
+1. Select attack type (SMS/CALL/EMAIL)
+2. Enter target (phone number or email)
+3. Watch realistic simulation
+4. Use NMAP/WHOIS for network reconnaissance
 
-## Development
+## Disclaimer
 
-Built with Flutter 3.10+ and Dart 3.0+. The game uses a simple state management system and command parser for terminal-style interaction.
+⚠️ **Educational Purpose Only** - This is a simulation tool for learning cybersecurity concepts. No real attacks are performed.
