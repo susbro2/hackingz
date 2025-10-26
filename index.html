@@ -749,7 +749,8 @@
             } catch (error) {
                 console.error('AI Error:', error);
                 addOutput('❌ AI Error: ' + error.message, 'error');
-                addOutput('🔄 Trying fallback response...', 'warning');
+                addOutput('📊 Debug: Check browser console for details', 'warning');
+                addOutput('🔄 Using demo response...', 'warning');
                 // Fallback response
                 const fallback = getFallbackResponse(question);
                 addOutput('🤖 AI (Demo): ' + fallback, 'info');
