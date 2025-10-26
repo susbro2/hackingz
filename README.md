@@ -1,6 +1,6 @@
-# TBomb Terminal PWA
+# Hackingz Terminal PWA
 
-A Progressive Web App (PWA) simulation of the TBomb hacking toolkit for educational purposes.
+A Progressive Web App (PWA) simulation of the Hackingz hacking toolkit for educational purposes.
 
 ## Features
 

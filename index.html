@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TBomb Terminal</title>
+    <title>Hackingz Terminal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -24,15 +24,11 @@
             padding: 10px;
             background: #000;
             border: 1px solid #333;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        #input-section {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #000;
-            padding: 10px;
-            border-top: 1px solid #333;
+        #terminal::-webkit-scrollbar {
+            display: none;
         }
         #quick-buttons {
             display: flex;
@@ -58,6 +54,16 @@
             color: #ff4040;
             border-color: #ff4040;
         }
+        #input-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            padding: 10px;
+            border-top: 1px solid #333;
+        }
+
         #input-line {
             display: flex;
         }
@@ -80,11 +86,33 @@
         .warning { color: #ffff00; }
         .error { color: #ff4040; }
         .info { color: #00bfff; }
+        
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        .matrix-char {
+            position: absolute;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
     </style>
 </head>
 <body>
+    <div id="matrix"></div>
     <div id="terminal">
-        <div class="output-line success">💣 TBOMB HACKING TOOLKIT v3.0 💣</div>
+        <div class="output-line success">⚡ HACKINGZ TOOLKIT v3.0 ⚡</div>
         <div class="output-line info">Multi-Service Attack Framework</div>
         <div class="output-line warning">⚠️  Educational Purpose Only ⚠️</div>
         <div class="output-line"></div>
@@ -112,16 +140,40 @@
     <script>
         const terminal = document.getElementById('terminal');
         const input = document.getElementById('command-input');
+        const matrix = document.getElementById('matrix');
         
         let attackMode = null;
-        let targetNumber = '';
+        
+        // Matrix rain effect
+        function createMatrixRain() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrix.appendChild(char);
+                
+                setTimeout(() => {
+                    if (char.parentNode) char.parentNode.removeChild(char);
+                }, 5000);
+            }
+        }
+        
+        setInterval(createMatrixRain, 1000);
         
         function addOutput(text, className = '') {
             const line = document.createElement('div');
             line.className = 'output-line ' + className;
             line.textContent = text;
             terminal.appendChild(line);
-            terminal.scrollTop = terminal.scrollHeight;
+            terminal.scrollTo({
+                top: terminal.scrollHeight,
+                behavior: 'smooth'
+            });
         }
         
         function quickCommand(cmd) {
@@ -131,7 +183,8 @@
         
         function processCommand(cmd) {
             const command = cmd.toUpperCase().trim();
-            addOutput('TBOMB> ' + command);
+            commandHistory.push(command);
+            addOutput('HACKINGZ> ' + command);
             
             switch (command) {
                 case 'MENU':
@@ -159,10 +212,143 @@
                     terminal.innerHTML = '';
                     return;
                 case 'EXIT':
-                    addOutput('Exiting TBomb...', 'warning');
+                    addOutput('Exiting Hackingz...', 'warning');
+                    break;
+                case 'HACK':
+                    hackTheMatrix();
+                    break;
+                case 'MATRIX':
+                    enterMatrix();
+                    break;
+                case 'JOKE':
+                    tellHackerJoke();
+                    break;
+                case 'DANCE':
+                    terminalDance();
+                    break;
+                case 'VIRUS':
+                    fakeVirus();
+                    break;
+                case 'LS':
+                case 'DIR':
+                    listDirectory();
+                    break;
+                case 'PWD':
+                    showCurrentDir();
+                    break;
+                case 'WHOAMI':
+                    showUser();
+                    break;
+                case 'DATE':
+                    showDate();
+                    break;
+                case 'UPTIME':
+                    showUptime();
+                    break;
+                case 'PS':
+                    showProcesses();
+                    break;
+                case 'NETSTAT':
+                    showNetstat();
+                    break;
+                case 'IFCONFIG':
+                case 'IPCONFIG':
+                    showNetworkConfig();
+                    break;
+                case 'PING':
+                    addOutput('Usage: PING <target>', 'info');
+                    break;
+                case 'TRACERT':
+                case 'TRACEROUTE':
+                    addOutput('Usage: TRACERT <target>', 'info');
+                    break;
+                case 'SYSTEMINFO':
+                    showSystemInfo();
+                    break;
+                case 'TASKLIST':
+                    showTaskList();
+                    break;
+                case 'HISTORY':
+                    showHistory();
+                    break;
+                case 'ECHO':
+                    addOutput('Usage: ECHO <message>', 'info');
+                    break;
+                case 'CAT':
+                case 'TYPE':
+                    addOutput('Usage: CAT <filename>', 'info');
+                    break;
+                case 'MKDIR':
+                    addOutput('Usage: MKDIR <dirname>', 'info');
+                    break;
+                case 'RMDIR':
+                    addOutput('Usage: RMDIR <dirname>', 'info');
+                    break;
+                case 'CD':
+                    addOutput('Usage: CD <directory>', 'info');
+                    break;
+                case 'COPY':
+                case 'CP':
+                    addOutput('Usage: COPY <source> <dest>', 'info');
+                    break;
+                case 'DEL':
+                case 'RM':
+                    addOutput('Usage: DEL <filename>', 'info');
+                    break;
+                case 'FIND':
+                case 'GREP':
+                    addOutput('Usage: FIND <pattern> <file>', 'info');
+                    break;
+                case 'TOP':
+                case 'HTOP':
+                    showTopProcesses();
+                    break;
+                case 'FREE':
+                    showMemoryUsage();
+                    break;
+                case 'DF':
+                    showDiskUsage();
+                    break;
+                case 'UNAME':
+                    showSystemName();
+                    break;
+                case 'ENV':
+                    showEnvironment();
+                    break;
+                case 'AI':
+                    toggleAIMode();
+                    break;
+                case 'ASK':
+                    addOutput('Usage: ASK <question>', 'info');
+                    break;
+                case 'ANALYZE':
+                    addOutput('Usage: ANALYZE <target>', 'info');
+                    break;
+                case 'SUGGEST':
+                    getAISuggestion();
+                    break;
+                case 'TESTAPI':
+                    testAPIConnection();
                     break;
                 default:
-                    if (isPhoneNumber(command)) {
+                    if (command.startsWith('ASK ')) {
+                        askAI(command.substring(4));
+                    } else if (command.startsWith('ANALYZE ')) {
+                        analyzeTarget(command.substring(8));
+                    } else if (aiMode && !command.startsWith('HACKINGZ>')) {
+                        chatWithAI(command);
+                    } else
+                    if (command.startsWith('PING ')) {
+                        pingHost(command.split(' ')[1]);
+                    } else if (command.startsWith('TRACERT ') || command.startsWith('TRACEROUTE ')) {
+                        traceRoute(command.split(' ')[1]);
+                    } else if (command.startsWith('ECHO ')) {
+                        addOutput(command.substring(5), 'info');
+                    } else if (command.startsWith('CD ')) {
+                        changeDirectory(command.split(' ')[1]);
+                    } else if (command.startsWith('SETKEY ')) {
+                        setAPIKey(command.substring(7));
+                    } else if (isPhoneNumber(command)) {
                         setTarget(command);
                     } else if (isEmail(command)) {
                         setEmailTarget(command);
@@ -175,7 +361,7 @@
         }
         
         function showMenu() {
-            addOutput('=== TBOMB ATTACK MENU ===', 'success');
+            addOutput('=== HACKINGZ ATTACK MENU ===', 'success');
             addOutput('1. SMS   - SMS bombing attack');
             addOutput('2. CALL  - Call bombing attack');
             addOutput('3. EMAIL - Email bombing attack');
@@ -285,7 +471,7 @@
         }
         
         function showHelp() {
-            addOutput('=== TBOMB COMMANDS ===', 'success');
+            addOutput('=== HACKINGZ COMMANDS ===', 'success');
             addOutput('MENU     - Show attack menu');
             addOutput('SMS      - SMS bombing mode');
             addOutput('CALL     - Call bombing mode');
@@ -294,6 +480,38 @@
             addOutput('WHOIS    - Domain lookup');
             addOutput('CLEAR    - Clear terminal');
             addOutput('EXIT     - Exit program');
+            addOutput('');
+            addOutput('=== SYSTEM COMMANDS ===', 'info');
+            addOutput('LS/DIR   - List directory contents');
+            addOutput('PWD      - Show current directory');
+            addOutput('CD       - Change directory');
+            addOutput('WHOAMI   - Show current user');
+            addOutput('DATE     - Show current date/time');
+            addOutput('UPTIME   - Show system uptime');
+            addOutput('PS       - Show running processes');
+            addOutput('TOP      - Show top processes');
+            addOutput('FREE     - Show memory usage');
+            addOutput('DF       - Show disk usage');
+            addOutput('NETSTAT  - Show network connections');
+            addOutput('IFCONFIG - Show network configuration');
+            addOutput('PING     - Ping a host');
+            addOutput('TRACERT  - Trace route to host');
+            addOutput('HISTORY  - Show command history');
+            addOutput('ECHO     - Display message');
+            addOutput('');
+            addOutput('=== AI COMMANDS ===', 'success');
+            addOutput('AI       - Toggle AI chat mode');
+            addOutput('ASK      - Ask AI a question');
+            addOutput('ANALYZE  - AI target analysis');
+            addOutput('SUGGEST  - Get AI suggestions');
+            addOutput('SETKEY   - Set OpenAI API key');
+            addOutput('');
+            addOutput('=== FUN COMMANDS ===', 'warning');
+            addOutput('HACK     - Hack the mainframe');
+            addOutput('MATRIX   - Enter the Matrix');
+            addOutput('JOKE     - Tell a hacker joke');
+            addOutput('DANCE    - Terminal dance party');
+            addOutput('VIRUS    - Fake virus alert');
         }
         
         function isPhoneNumber(str) {
@@ -304,76 +522,410 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
         }
         
-        input.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const cmd = input.value.trim();
-                if (cmd) {
-                    processCommand(cmd);
-                    input.value = '';
-                }
-            }
-        });
-        
-        // Register service worker for PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        function hackTheMatrix() {
+            addOutput('🔓 ACCESSING MAINFRAME...', 'warning');
+            setTimeout(() => addOutput('💀 FIREWALL BYPASSED', 'success'), 1000);
+            setTimeout(() => addOutput('🎯 ROOT ACCESS GRANTED', 'success'), 2000);
+            setTimeout(() => addOutput('👑 YOU ARE NOW THE ADMIN!', 'success'), 3000);
         }
         
-        input.focus();
-        setTimeout(() => showMenu(), 1000);
-    </script>
-</body>
-</html>terval);
-                    addOutput('✅ Call bombing completed!', 'success');
-                    addOutput('Total calls made: ' + count, 'info');
-                    attackMode = null;
-                    return;
-                }
-                
-                const service = services[Math.floor(Math.random() * services.length)];
-                count++;
-                addOutput('[' + count + '] Initiating ' + service + '... ✓', 'success');
-            }, 800);
+        function enterMatrix() {
+            addOutput('🔴 Taking the red pill...', 'error');
+            document.body.style.filter = 'hue-rotate(120deg)';
+            setTimeout(() => {
+                addOutput('🌍 Welcome to the real world, Neo.', 'success');
+                document.body.style.filter = 'none';
+            }, 3000);
         }
         
-        function startEmailBombing() {
-            addOutput('📧 Starting email bombing attack...', 'warning');
-            const services = ['Newsletter', 'Promotional Email', 'Verification Email', 'Spam Email'];
-            let count = 0;
-            
+        function tellHackerJoke() {
+            const jokes = [
+                'Why do hackers prefer dark mode? Because light attracts bugs! 🐛',
+                'How many hackers does it take to change a light bulb? None, they just exploit the darkness! 💡',
+                'Why did the hacker break up with the internet? Too many connection issues! 💔',
+                'What do you call a hacker who can\'t code? A script kiddie! 👶',
+                'Why don\'t hackers ever get lost? They always find the backdoor! 🚪'
+            ];
+            addOutput(jokes[Math.floor(Math.random() * jokes.length)], 'info');
+        }
+        
+        function terminalDance() {
+            const dance = ['🕺', '💃', '🤖', '👾', '🎭'];
+            let i = 0;
             const interval = setInterval(() => {
-                if (count >= 100) {
-                    clearInterval(interval);
-                    addOutput('✅ Email bombing completed!', 'success');
-                    addOutput('Total emails sent: ' + count, 'info');
-                    attackMode = null;
-                    return;
-                }
-                
-                const service = services[Math.floor(Math.random() * services.length)];
-                count++;
-                addOutput('[' + count + '] Sending ' + service + '... ✓', 'success');
+                addOutput(dance[i % dance.length] + ' TERMINAL DANCE PARTY! ' + dance[i % dance.length], 'success');
+                i++;
+                if (i >= 10) clearInterval(interval);
             }, 300);
         }
         
-        function showHelp() {
-            addOutput('=== TBOMB COMMANDS ===', 'success');
-            addOutput('MENU     - Show attack menu');
-            addOutput('SMS      - SMS bombing mode');
-            addOutput('CALL     - Call bombing mode');
-            addOutput('EMAIL    - Email bombing mode');
-            addOutput('NMAP     - Network scanner');
-            addOutput('WHOIS    - Domain lookup');
-            addOutput('CLEAR    - Clear terminal');
-            addOutput('EXIT     - Exit program');
+        function fakeVirus() {
+            addOutput('🦠 VIRUS DETECTED!', 'error');
+            addOutput('🔥 DELETING SYSTEM32...', 'warning');
+            setTimeout(() => addOutput('😂 Just kidding! It\'s a simulation!', 'success'), 2000);
         }
         
-        function isPhoneNumber(str) {
-            return /^\+?[1-9]\d{1,14}$/.test(str.replace(/[\s\-\(\)]/g, ''));
+        let currentDir = '/home/hacker';
+        let commandHistory = [];
+        let aiMode = false;
+        let apiKey = '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';
+        
+        // AI Configuration - OpenRouter + DeepSeek
+        const AI_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+        const AI_MODEL = 'tngtech/deepseek-r1t2-chimera:free';
+        
+        function listDirectory() {
+            addOutput('total 8');
+            addOutput('drwxr-xr-x 2 hacker hacker 4096 Dec 26 14:30 Documents');
+            addOutput('drwxr-xr-x 2 hacker hacker 4096 Dec 26 14:30 Downloads');
+            addOutput('-rw-r--r-- 1 hacker hacker  256 Dec 26 14:30 passwords.txt');
+            addOutput('-rwxr-xr-x 1 hacker hacker 1024 Dec 26 14:30 exploit.sh');
+            addOutput('-rw-r--r-- 1 hacker hacker  512 Dec 26 14:30 targets.db');
         }
         
-        function isEmail(str) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str);
+        function showCurrentDir() {
+            addOutput(currentDir, 'info');
+        }
+        
+        function showUser() {
+            addOutput('hacker', 'success');
+        }
+        
+        function showDate() {
+            addOutput(new Date().toString(), 'info');
+        }
+        
+        function showUptime() {
+            addOutput('up 2 days, 14:32, 1 user, load average: 0.15, 0.10, 0.05', 'info');
+        }
+        
+        function showProcesses() {
+            addOutput('PID TTY          TIME CMD');
+            addOutput('1234 pts/0    00:00:01 hackingz');
+            addOutput('5678 pts/0    00:00:00 exploit');
+            addOutput('9012 pts/0    00:00:02 keylogger');
+            addOutput('3456 pts/0    00:00:01 backdoor');
+        }
+        
+        function showNetstat() {
+            addOutput('Active Internet connections:');
+            addOutput('Proto Recv-Q Send-Q Local Address           Foreign Address         State');
+            addOutput('tcp        0      0 192.168.1.100:22        192.168.1.1:54321       ESTABLISHED');
+            addOutput('tcp        0      0 192.168.1.100:80        0.0.0.0:*               LISTEN');
+            addOutput('tcp        0      0 192.168.1.100:443       0.0.0.0:*               LISTEN');
+        }
+        
+        function showNetworkConfig() {
+            addOutput('eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500');
+            addOutput('        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255');
+            addOutput('        inet6 fe80::a00:27ff:fe4e:66a1  prefixlen 64  scopeid 0x20<link>');
+            addOutput('        ether 08:00:27:4e:66:a1  txqueuelen 1000  (Ethernet)');
+        }
+        
+        function showSystemInfo() {
+            addOutput('Host Name:                 HACKINGZ-PC');
+            addOutput('OS Name:                   HackerOS 3.0');
+            addOutput('OS Version:                10.0.19041 Build 19041');
+            addOutput('System Type:               x64-based PC');
+            addOutput('Processor:                 Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz');
+            addOutput('Total Physical Memory:     16,384 MB');
+        }
+        
+        function showTaskList() {
+            addOutput('Image Name                     PID Session Name        Session#    Mem Usage');
+            addOutput('========================= ======== ================ =========== ============');
+            addOutput('hackingz.exe                  1234 Console                    1     15,234 K');
+            addOutput('exploit.exe                   5678 Console                    1      8,192 K');
+            addOutput('backdoor.exe                  9012 Console                    1      4,096 K');
+        }
+        
+        function showHistory() {
+            commandHistory.forEach((cmd, i) => {
+                addOutput((i + 1) + '  ' + cmd, 'info');
+            });
+        }
+        
+        function showTopProcesses() {
+            addOutput('PID    USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND');
+            addOutput('1234   hacker    20   0  157532  15234   8192 S  25.0  0.9   0:15.34 hackingz');
+            addOutput('5678   hacker    20   0   98304   8192   4096 S  15.0  0.5   0:08.21 exploit');
+            addOutput('9012   hacker    20   0   65536   4096   2048 S  10.0  0.3   0:04.12 backdoor');
+        }
+        
+        function showMemoryUsage() {
+            addOutput('              total        used        free      shared  buff/cache   available');
+            addOutput('Mem:       16777216     8388608     4194304      524288     4194304    7340032');
+            addOutput('Swap:       2097152      524288     1572864');
+        }
+        
+        function showDiskUsage() {
+            addOutput('Filesystem     1K-blocks    Used Available Use% Mounted on');
+            addOutput('/dev/sda1       52428800 26214400  24117248  53% /');
+            addOutput('/dev/sda2      104857600 31457280  68157440  32% /home');
+        }
+        
+        function showSystemName() {
+            addOutput('HackerOS 3.0 hackingz-pc 5.4.0-42-generic #46-Ubuntu x86_64 GNU/Linux', 'info');
+        }
+        
+        function showEnvironment() {
+            addOutput('PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin');
+            addOutput('HOME=/home/hacker');
+            addOutput('USER=hacker');
+            addOutput('SHELL=/bin/bash');
+            addOutput('TERM=xterm-256color');
+        }
+        
+        function pingHost(host) {
+            if (!host) {
+                addOutput('Usage: PING <host>', 'error');
+                return;
+            }
+            addOutput('PING ' + host + ' (192.168.1.1): 56 data bytes');
+            let count = 0;
+            const interval = setInterval(() => {
+                const time = (Math.random() * 50 + 10).toFixed(1);
+                addOutput('64 bytes from ' + host + ': icmp_seq=' + count + ' ttl=64 time=' + time + ' ms');
+                count++;
+                if (count >= 4) {
+                    clearInterval(interval);
+                    addOutput('--- ' + host + ' ping statistics ---');
+                    addOutput('4 packets transmitted, 4 received, 0% packet loss');
+                }
+            }, 1000);
+        }
+        
+        function traceRoute(host) {
+            if (!host) {
+                addOutput('Usage: TRACERT <host>', 'error');
+                return;
+            }
+            addOutput('Tracing route to ' + host + ' over a maximum of 30 hops:');
+            const hops = ['192.168.1.1', '10.0.0.1', '203.0.113.1', host];
+            hops.forEach((hop, i) => {
+                setTimeout(() => {
+                    const time = (Math.random() * 50 + 10).toFixed(0);
+                    addOutput((i + 1) + '    ' + time + ' ms    ' + hop);
+                }, (i + 1) * 1000);
+            });
+        }
+        
+        function changeDirectory(dir) {
+            if (!dir) {
+                addOutput('Usage: CD <directory>', 'error');
+                return;
+            }
+            if (dir === '..') {
+                currentDir = '/home';
+            } else {
+                currentDir = currentDir + '/' + dir;
+            }
+            addOutput('Changed to: ' + currentDir, 'success');
+        }
+        
+        // AI Functions
+        function toggleAIMode() {
+            aiMode = !aiMode;
+            if (aiMode) {
+                addOutput('🤖 AI MODE ACTIVATED', 'success');
+                addOutput('You can now chat directly with AI. Type EXIT to return to terminal mode.');
+                addOutput('🧠 DeepSeek R1T2 Chimera AI is ready!', 'success');
+            } else {
+                addOutput('💻 TERMINAL MODE ACTIVATED', 'info');
+            }
+        }
+        
+        async function askAI(question) {
+            if (!question.trim()) {
+                addOutput('Please provide a question.', 'error');
+                return;
+            }
+            
+            addOutput('🤖 AI is thinking...', 'warning');
+            
+            try {
+                const response = await callAI(question, 'hacking');
+                addOutput('🤖 AI: ' + response, 'success');
+            } catch (error) {
+                console.error('AI Error:', error);
+                addOutput('❌ AI Error: ' + error.message, 'error');
+                addOutput('🔄 Trying fallback response...', 'warning');
+                // Fallback response
+                const fallback = getFallbackResponse(question);
+                addOutput('🤖 AI (Demo): ' + fallback, 'info');
+            }
+        }
+        
+        async function analyzeTarget(target) {
+            if (!target.trim()) {
+                addOutput('Please provide a target to analyze.', 'error');
+                return;
+            }
+            
+            addOutput('🔍 Analyzing target: ' + target, 'warning');
+            
+            try {
+                const prompt = `Analyze this target for potential vulnerabilities: ${target}. Provide a security assessment.`;
+                const response = await callAI(prompt, 'security');
+                addOutput('🔍 Analysis: ' + response, 'success');
+            } catch (error) {
+                // Fallback analysis
+                addOutput('🔍 Analysis (Demo):', 'info');
+                addOutput('Target: ' + target);
+                addOutput('Potential vulnerabilities: Open ports, weak passwords, outdated software');
+                addOutput('Recommended approach: Port scan, social engineering, exploit research');
+            }
+        }
+        
+        async function getAISuggestion() {
+            addOutput('💡 Getting AI suggestion...', 'warning');
+            
+            try {
+                const prompt = 'Suggest the next best hacking technique or command for a penetration test.';
+                const response = await callAI(prompt, 'suggestion');
+                addOutput('💡 AI Suggests: ' + response, 'success');
+            } catch (error) {
+                // Fallback suggestions
+                const suggestions = [
+                    'Try running NMAP scan to discover open ports',
+                    'Use social engineering to gather information',
+                    'Check for default passwords on discovered services',
+                    'Look for SQL injection vulnerabilities',
+                    'Perform reconnaissance with WHOIS lookup'
+                ];
+                const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                addOutput('💡 AI Suggests (Demo): ' + suggestion, 'info');
+            }
+        }
+        
+        async function chatWithAI(message) {
+            addOutput('🤖 AI is responding...', 'warning');
+            
+            try {
+                const response = await callAI(message, 'chat');
+                addOutput('🤖 AI: ' + response, 'success');
+            } catch (error) {
+                const fallback = getFallbackResponse(message);
+                addOutput('🤖 AI (Demo): ' + fallback, 'info');
+            }
+        }
+        
+        async function callAI(prompt, context) {
+            if (!apiKey) {
+                throw new Error('No API key provided');
+            }
+            
+            const systemPrompt = getSystemPrompt(context);
+            
+            const response = await fetch(AI_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`,
+                    'HTTP-Referer': 'https://hackingz-terminal.vercel.app',
+                    'X-Title': 'Hackingz Terminal'
+                },
+                body: JSON.stringify({
+                    model: AI_MODEL,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: prompt }
+                    ],
+                    max_tokens: 150,
+                    temperature: 0.7
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+            
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error.message || 'API Error');
+            }
+            
+            if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                throw new Error('Invalid API response format');
+            }
+            
+            const message = data.choices[0].message;
+            let content = message.content;
+            
+            // Handle DeepSeek reasoning format
+            if (!content || content.trim() === '') {
+                if (message.reasoning) {
+                    content = message.reasoning;
+                } else if (message.reasoning_details && message.reasoning_details[0]) {
+                    content = message.reasoning_details[0].text;
+                }
+            }
+            
+            if (!content || content.trim() === '') {
+                throw new Error('Empty response from AI');
+            }
+            
+            return content.trim();
+        }
+        
+        function getSystemPrompt(context) {
+            const prompts = {
+                hacking: 'You are a cybersecurity expert assistant. Provide educational information about ethical hacking and security testing. Always emphasize legal and ethical practices.',
+                security: 'You are a security analyst. Provide professional security assessments and recommendations for educational purposes only.',
+                suggestion: 'You are a penetration testing mentor. Suggest ethical hacking techniques for educational security testing.',
+                chat: 'You are a helpful AI assistant with expertise in cybersecurity and ethical hacking. Keep responses concise and educational.'
+            };
+            return prompts[context] || prompts.chat;
+        }
+        
+        function getFallbackResponse(input) {
+            const responses = [
+                'That\'s an interesting question about cybersecurity.',
+                'For educational purposes, I\'d recommend researching that topic further.',
+                'That relates to important security concepts.',
+                'Consider the ethical implications of that approach.',
+                'That\'s a common topic in penetration testing courses.'
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+        
+        function setAPIKey(key) {
+            apiKey = key;
+            addOutput('✓ API key configured successfully!', 'success');
+            addOutput('You can now use real AI features.', 'info');
+        }
+        
+        async function testAPIConnection() {
+            addOutput('🔍 Testing API connection...', 'warning');
+            addOutput('API URL: ' + AI_API_URL, 'info');
+            addOutput('Model: ' + AI_MODEL, 'info');
+            addOutput('Key: ' + apiKey.substring(0, 10) + '...', 'info');
+            
+            try {
+                const response = await fetch(AI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + apiKey,
+                        'HTTP-Referer': 'https://hackingz-terminal.vercel.app',
+                        'X-Title': 'Hackingz Terminal'
+                    },
+                    body: JSON.stringify({
+                        model: AI_MODEL,
+                        messages: [{ role: 'user', content: 'Hello' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                addOutput('Response Status: ' + response.status, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                addOutput('Response: ' + JSON.stringify(data, null, 2), 'info');
+                
+            } catch (error) {
+                addOutput('❌ Connection Error: ' + error.message, 'error');
+            }
         }
         
         input.addEventListener('keypress', function(e) {
@@ -385,6 +937,10 @@
                 }
             }
         });
+        
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
         
         input.focus();
         setTimeout(() => showMenu(), 1000);

@@ -1,7 +1,7 @@
 {
-  "name": "TBomb Terminal",
-  "short_name": "TBomb",
-  "description": "TBomb Hacking Toolkit Simulator",
+  "name": "Hackingz Terminal",
+  "short_name": "Hackingz",
+  "description": "Hackingz Toolkit Simulator",
   "start_url": "./terminal.html",
   "display": "fullscreen",
   "background_color": "#000000",
