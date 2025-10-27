@@ -96,6 +96,12 @@
             z-index: -1;
             opacity: 0.1;
         }
+        #product-hunt-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
         .matrix-char {
             position: absolute;
             color: #0f0;
@@ -110,6 +116,11 @@
     </style>
 </head>
 <body>
+    <div id="product-hunt-badge">
+        <a href="https://www.producthunt.com/products/hackingz-terminal?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-hackingz-terminal" target="_blank">
+            <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1031418&theme=dark&t=1761564169993" alt="Hackingz Terminal - My code is simulated. The thrill is real. | Product Hunt" style="width: 125px; height: 27px;" width="125" height="27" />
+        </a>
+    </div>
     <div id="matrix"></div>
     <div id="terminal">
         <div class="output-line success">⚡ HACKINGZ TOOLKIT v3.0 ⚡</div>
